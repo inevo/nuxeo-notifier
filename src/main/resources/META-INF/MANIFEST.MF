@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Require-Bundle: org.nuxeo.ecm.directory.api, org.nuxeo.ecm.default.con
+ fig, org.nuxeo.ecm.directories
+Bundle-Vendor: Nuxeo
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: org.nuxeo.ecm.notifier;singleton:=true
+Bundle-Version: 5.7
+Bundle-Name: Nuxeo Notifier
+Nuxeo-Component: OSGI-INF/notification-contrib.xml, OSGI-INF/usernotification-adapter-contrib.xml
+Bundle-SymbolicName: nuxeo-notifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
