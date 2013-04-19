@@ -1,4 +1,4 @@
-package org.nexuo.ecm.notifier;
+package org.nuxeo.ecm.notifier;
 
 public class NotifierConstants {
 
@@ -7,7 +7,7 @@ public class NotifierConstants {
         // Constants class
     }
     
-    public static final String NOTIFICATION_FIELD_USER = "actor";
+    public static final String NOTIFICATION_FIELD_USER = "user";
     
     public static final String NOTIFICATION_FIELD_CREATED = "created";
     
@@ -18,6 +18,8 @@ public class NotifierConstants {
     public static final String NOTIFICATION_FIELD_NAME = "name";
     
     public static final String NOTIFICATION_FIELD_TARGET = "target";
+    
+    public static final String NOTIFICATION_FIELD_LABEL = "label";
     
     public static final String NOTIFICATION_FIELD_OBJECT = "object";
     

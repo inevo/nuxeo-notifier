@@ -6,7 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: org.nuxeo.ecm.notifier;singleton:=true
 Bundle-Version: 5.7
 Bundle-Name: Nuxeo Notifier
-Nuxeo-Component: OSGI-INF/notification-contrib.xml, OSGI-INF/usernotification-adapter-contrib.xml
+Nuxeo-Component: OSGI-INF/notification-contrib.xml, OSGI-INF/usernotification-adapter-contrib.xml,OSGI-INF/notifier-service.xml
 Bundle-SymbolicName: nuxeo-notifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

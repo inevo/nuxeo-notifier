@@ -3,12 +3,14 @@
     targetNamespace="http://www.nuxeo.org/ecm/schemas/resetPasswordKey"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
     
-	<xs:element name="id" type="xs:string"/>
+	<xs:element name="id" type="xs:integer"/>
     <xs:element name="user" type="xs:string"/>
     <xs:element name="originEvent" type="xs:string"/>
     <xs:element name="name" type="xs:string"/>
+    <xs:element name="label" type="xs:string"/>
     <xs:element name="target" type="xs:string"/>
     <xs:element name="object" type="xs:string"/>
+    <xs:element name="template" type="xs:string"/>
     <xs:element name="created" type="xs:date" />
 	<xs:element name="viewed" type="xs:date" />
 	
