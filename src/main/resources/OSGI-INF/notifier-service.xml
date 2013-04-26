@@ -13,4 +13,36 @@
       interface="org.nuxeo.ecm.notifier.service.NotifierService" />
   </service>
 
+  <extension-point name="notificationTypes">
+    <documentation>
+      This extension point can be used to configure available notifications types. A
+      given notification has the form:
+      <code>
+		<notificationType name="newComment" 
+						  label="label.notification.type.newComment" 
+						  template="comment-notification" 
+						  summaryTemplate="omment-notification-summary" />
+      </code>
+      The
+      <em>name</em>
+      is the identifier for this notification type. The notification type is identified on the user notification by this field.
+
+      The
+      <em>label</em>
+      label of notification description
+
+      The
+      <em>template</em>
+      is the file name of the freemarker template to render the full notification
+
+      The
+      <em>summaryTemplate</em>
+      is the file name of the freemarker template to render only the summary of the notification
+
+    </documentation>
+    <object
+      class="org.nuxeo.ecm.notifier.service.NotificationTypeDescriptor" />
+  </extension-point>
+
+
 </component>

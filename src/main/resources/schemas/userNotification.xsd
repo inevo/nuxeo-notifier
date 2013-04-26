@@ -10,7 +10,7 @@
     <xs:element name="label" type="xs:string"/>
     <xs:element name="target" type="xs:string"/>
     <xs:element name="object" type="xs:string"/>
-    <xs:element name="template" type="xs:string"/>
+    <xs:element name="type" type="xs:string"/>
     <xs:element name="created" type="xs:date" />
 	<xs:element name="viewed" type="xs:date" />
 	
