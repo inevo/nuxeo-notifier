@@ -48,8 +48,7 @@ import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.DefaultComponent;
 import org.nuxeo.runtime.model.Extension;
 
-public class NotifierServiceImpl extends DefaultComponent implements
-		NotifierService {
+public class NotifierServiceImpl extends DefaultComponent implements NotifierService {
 
 	private static final Log log = LogFactory.getLog(NotifierServiceImpl.class);
 	protected static final String NOTIFIER_DIRECTORY_NAME = "userNotification";
@@ -58,9 +57,8 @@ public class NotifierServiceImpl extends DefaultComponent implements
 
 	@Override
 	public List<UserNotificationAdapter> getUnreadNotifications(String username) {
-		String user_ref = ActivityHelper.createUserActivityObject(username);
 		Map<String, Serializable> filterMap = new HashMap<String, Serializable>();
-		filterMap.put(NOTIFICATION_FIELD_USER, user_ref);
+		filterMap.put(NOTIFICATION_FIELD_USER, username);
 		filterMap.put(NOTIFICATION_FIELD_VIEWED, null);
 		DocumentModelList docs = queryNotifierDirectory(filterMap);
 		List<UserNotificationAdapter> notifications = new ArrayList<UserNotificationAdapter>();
@@ -71,11 +69,9 @@ public class NotifierServiceImpl extends DefaultComponent implements
 	}
 
 	@Override
-	public List<UserNotificationAdapter> getNotifications(String username,
-			int limit) {
+	public List<UserNotificationAdapter> getNotifications(String username, int limit) {
 		Map<String, Serializable> filterMap = new HashMap<String, Serializable>();
-		String user_ref = ActivityHelper.createUserActivityObject(username);
-		filterMap.put(NOTIFICATION_FIELD_USER, user_ref);
+		filterMap.put(NOTIFICATION_FIELD_USER, username);
 		DocumentModelList docs = queryNotifierDirectory(filterMap, limit);
 		List<UserNotificationAdapter> notifications = new ArrayList<UserNotificationAdapter>();
 		for (DocumentModel doc : docs) {
@@ -87,18 +83,15 @@ public class NotifierServiceImpl extends DefaultComponent implements
 	@Override
 	public long countUnreadNotifications(String username) {
 		Map<String, Serializable> filterMap = new HashMap<String, Serializable>();
-		String user_ref = ActivityHelper.createUserActivityObject(username);
-		filterMap.put(NOTIFICATION_FIELD_USER, user_ref);
+		filterMap.put(NOTIFICATION_FIELD_USER, username);
 		filterMap.put(NOTIFICATION_FIELD_VIEWED, null);
 		DocumentModelList docs = queryNotifierDirectory(filterMap);
-
 		return docs.totalSize();
 	}
 
 	public List<UserNotificationAdapter> getUserNotifications(String username) {
 		Map<String, Serializable> filterMap = new HashMap<String, Serializable>();
-		String user_ref = ActivityHelper.createUserActivityObject(username);
-		filterMap.put(NOTIFICATION_FIELD_USER, user_ref);
+		filterMap.put(NOTIFICATION_FIELD_USER, username);
 		DocumentModelList docs = queryNotifierDirectory(filterMap);
 		List<UserNotificationAdapter> notifications = new ArrayList<UserNotificationAdapter>();
 		for (DocumentModel doc : docs) {
@@ -110,8 +103,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 	@Override
 	public void markAllRead(String username) {
 		List<UserNotificationAdapter> unreadNotifications = getUnreadNotifications(username);
-		DirectoryService directoryService = Framework
-				.getLocalService(DirectoryService.class);
+		DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
 		Session notifierDirectory = null;
 		try {
 			notifierDirectory = directoryService.open(NOTIFIER_DIRECTORY_NAME);
@@ -123,8 +115,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClientException e) {
-			throw new ClientRuntimeException(
-					"Unable to create a new notification", e);
+			throw new ClientRuntimeException("Unable to create a new notification", e);
 		} finally {
 			if (notifierDirectory != null) {
 				try {
@@ -140,8 +131,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 	@Override
 	public Boolean addNotification(String user, String originEvent,
 			String name, String target, String object, String label) {
-		DirectoryService directoryService = Framework
-				.getLocalService(DirectoryService.class);
+		DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
 		Session notifierDirectory = null;
 		try {
 			notifierDirectory = directoryService.open(NOTIFIER_DIRECTORY_NAME);
@@ -153,21 +143,17 @@ public class NotifierServiceImpl extends DefaultComponent implements
 			notification.put(NOTIFICATION_FIELD_LABEL, label);
 			notification.put(NOTIFICATION_FIELD_OBJECT, object);
 			notification.put(NOTIFICATION_FIELD_ORIGIN_EVENT, originEvent);
-			notification
-					.put(NOTIFICATION_FIELD_CREATED, Calendar.getInstance());
+			notification.put(NOTIFICATION_FIELD_CREATED, Calendar.getInstance());
 
-			DocumentModelList notifications = notifierDirectory
-					.query(notification);
+			DocumentModelList notifications = notifierDirectory.query(notification);
 			if (notifications.isEmpty()) {
-				notifierDirectory.createEntry(new HashMap<String, Object>(
-						notification));
+				notifierDirectory.createEntry(new HashMap<String, Object>(notification));
 				return true;
 			} else {
 				return false;
 			}
 		} catch (ClientException e) {
-			throw new ClientRuntimeException(
-					"Unable to create a new notification", e);
+			throw new ClientRuntimeException("Unable to create a new notification", e);
 		} finally {
 			if (notifierDirectory != null) {
 				try {
@@ -182,8 +168,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 
 	@Override
 	public Boolean removeNotification(long id) {
-		DirectoryService directoryService = Framework
-				.getLocalService(DirectoryService.class);
+		DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
 		Session notifierDirectory = null;
 		try {
 			notifierDirectory = directoryService.open(NOTIFIER_DIRECTORY_NAME);
@@ -191,8 +176,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 			Map<String, Serializable> filter = new HashMap<String, Serializable>();
 			filter.put(NOTIFICATION_FIELD_ID, id);
 
-			DocumentModelList notifications = notifierDirectory.query(filter,
-					filter.keySet());
+			DocumentModelList notifications = notifierDirectory.query(filter, filter.keySet());
 			if (notifications.isEmpty()) {
 				log.warn("Trying to delete a relationship that doesn't exists");
 				return false;
@@ -203,8 +187,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 				return true;
 			}
 		} catch (ClientException e) {
-			throw new ClientRuntimeException(
-					"Unable to remove the notification", e);
+			throw new ClientRuntimeException("Unable to remove the notification", e);
 		} finally {
 			if (notifierDirectory != null) {
 				try {
@@ -219,8 +202,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 
 	@Override
 	public UserNotificationAdapter getNotification(long id) {
-		DirectoryService directoryService = Framework
-				.getLocalService(DirectoryService.class);
+		DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
 		Session notifierDirectory = null;
 		try {
 			notifierDirectory = directoryService.open(NOTIFIER_DIRECTORY_NAME);
@@ -233,12 +215,10 @@ public class NotifierServiceImpl extends DefaultComponent implements
 				log.warn("Trying to delete a relationship that doesn't exists");
 				return null;
 			} else {
-				return notifications.get(0).getAdapter(
-						UserNotificationAdapter.class);
+				return notifications.get(0).getAdapter(UserNotificationAdapter.class);
 			}
 		} catch (ClientException e) {
-			throw new ClientRuntimeException(
-					"Unable to remove the notification", e);
+			throw new ClientRuntimeException("Unable to remove the notification", e);
 		} finally {
 			if (notifierDirectory != null) {
 				try {
@@ -251,29 +231,23 @@ public class NotifierServiceImpl extends DefaultComponent implements
 		}
 	}
 
-	protected DocumentModelList queryNotifierDirectory(
-			Map<String, Serializable> filter) {
+	protected DocumentModelList queryNotifierDirectory(Map<String, Serializable> filter) {
 		return queryNotifierDirectory(filter, 0);
 	}
 
-	protected DocumentModelList queryNotifierDirectory(
-			Map<String, Serializable> filter, int limit) {
-		DirectoryService directoryService = Framework
-				.getLocalService(DirectoryService.class);
+	protected DocumentModelList queryNotifierDirectory(Map<String, Serializable> filter, int limit) {
+		DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
 		Session notifierDirectory = null;
 		try {
 			notifierDirectory = directoryService.open(NOTIFIER_DIRECTORY_NAME);
 			if (limit > 0) {
-				return notifierDirectory.query(filter, null,
-						getRelationshipsOrderBy(), false, limit, 0);
+				return notifierDirectory.query(filter, null, getRelationshipsOrderBy(), false, limit, 0);
 			} else {
-				return notifierDirectory.query(filter, null,
-						getRelationshipsOrderBy());
+				return notifierDirectory.query(filter, null, getRelationshipsOrderBy());
 			}
 
 		} catch (ClientException e) {
-			throw new ClientRuntimeException(
-					"Unable to query through notifier directory", e);
+			throw new ClientRuntimeException("Unable to query through notifier directory", e);
 		} finally {
 			if (notifierDirectory != null) {
 				try {
@@ -295,7 +269,6 @@ public class NotifierServiceImpl extends DefaultComponent implements
 	@Override
 	public void activate(ComponentContext context) throws Exception {
 		notificationTypeRegistry = new NotificationTypeRegistryImpl();
-
 	}
 
 	@Override
@@ -313,8 +286,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 			for (Object contrib : contribs) {
 				try {
 					NotificationTypeDescriptor notifDesc = (NotificationTypeDescriptor) contrib;
-					notificationTypeRegistry
-							.registerNotificationType(notifDesc);
+					notificationTypeRegistry.registerNotificationType(notifDesc);
 				} catch (Exception e) {
 					log.error(e);
 				}
@@ -330,8 +302,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 			for (Object contrib : contribs) {
 				try {
 					NotificationTypeDescriptor notifDesc = (NotificationTypeDescriptor) contrib;
-					notificationTypeRegistry
-							.unregisterNotificationType(notifDesc);
+					notificationTypeRegistry.unregisterNotificationType(notifDesc);
 				} catch (Exception e) {
 					log.error(e);
 				}
@@ -347,19 +318,16 @@ public class NotifierServiceImpl extends DefaultComponent implements
 	public String renderNotification(UserNotificationAdapter userNotification,
 			CoreSession session) throws ClientException {
 		NotificationType notificationType = notificationTypeRegistry
-				.getNotificationTypeByName(userNotification.getName());
-		return renderTemplate(notificationType.getTemplate(), userNotification,
-				session);
+                .getNotificationTypeByName(userNotification.getName());
+		return renderTemplate(notificationType.getTemplate(), userNotification,	session);
 	}
 
 	@Override
 	public String renderNotificationSummary(
 			UserNotificationAdapter userNotification, CoreSession session)
 			throws ClientException {
-		NotificationType notificationType = notificationTypeRegistry
-				.getNotificationTypeByName(userNotification.getName());
-		return renderTemplate(notificationType.getSummaryTemplate(),
-				userNotification, session);
+		NotificationType notificationType = notificationTypeRegistry.getNotificationTypeByName(userNotification.getName());
+		return renderTemplate(notificationType.getSummaryTemplate(), userNotification, session);
 	}
 
 	protected String renderTemplate(String template,
@@ -371,25 +339,17 @@ public class NotifierServiceImpl extends DefaultComponent implements
 		context.remove("doc");
 
 		context.put("notification", userNotification.getDocumentModel());
-
 		context.put("isUnread", userNotification.isUnread());
-
 		// set user documents
-		context.put("user",
-				getUserData(userNotification.getUsername(), session));
-
+		context.put("user",	getUserData(userNotification.getUsername(), session));
 		// set Target documents
-		context.putAll(setContextDocuments("target",
-				userNotification.getTarget(), session));
-
-		context.putAll(setContextDocuments("object",
-				userNotification.getObject(), session));
+		context.putAll(setContextDocuments("target", userNotification.getTarget(), session));
+		context.putAll(setContextDocuments("object", userNotification.getObject(), session));
 
 		// render
 		try {
 			RenderingService rs = Framework.getService(RenderingService.class);
-			rs.registerEngine((RenderingEngine) new UserNotificationRenderingEngine(
-					template));
+			rs.registerEngine((RenderingEngine) new UserNotificationRenderingEngine(template));
 			Collection<RenderingResult> results = rs.process(context);
 
 			for (RenderingResult result : results) {
@@ -411,21 +371,17 @@ public class NotifierServiceImpl extends DefaultComponent implements
 		UserManager userManager;
 		try {
 			userProfileService = Framework.getService(UserProfileService.class);
-			DocumentModel userProfile = userProfileService
-					.getUserProfileDocument(username, coreSession);
+			DocumentModel userProfile = userProfileService.getUserProfileDocument(username, coreSession);
 			user.put("userProfile", userProfile);
 
 			userManager = Framework.getService(UserManager.class);
 			user.put("userModel", userManager.getUserModel(username));
 
-			String contextPath = Framework
-					.getProperty("org.nuxeo.ecm.contextPath");
+			String contextPath = Framework.getProperty("org.nuxeo.ecm.contextPath");
 			Blob avatar;
-			String avatarUri = contextPath
-					+ "/site/skin/nuxeo/icons/default_avatar.png";
+			String avatarUri = contextPath + "/site/skin/nuxeo/icons/default_avatar.png";
 			try {
-				avatar = (Blob) userProfile
-						.getPropertyValue("userprofile:avatar");
+				avatar = (Blob) userProfile.getPropertyValue("userprofile:avatar");
 			} catch (ClientException e) {
 				log.debug("No avatar found");
 				avatar = null;
@@ -435,8 +391,7 @@ public class NotifierServiceImpl extends DefaultComponent implements
 				// TODO : Use a relative path (be careful of proxy stuff)
 				String uriPattern = "%s/nxfile/%s/%s/userprofile:avatar/";
 				String repositoryName = coreSession.getRepositoryName();
-				avatarUri = String.format(uriPattern, contextPath,
-						repositoryName, userProfile.getId());
+				avatarUri = String.format(uriPattern, contextPath, repositoryName, userProfile.getId());
 			}
 			user.put("avatarUri", avatarUri);
 
@@ -452,44 +407,27 @@ public class NotifierServiceImpl extends DefaultComponent implements
 		Map<String, Object> data = new HashMap<String, Object>();
 		if (ActivityHelper.isActivity(objectId)) {
 			Map<String, Object> activityData = new HashMap<String, Object>();
-			ActivityStreamService activityStreamService = Framework
-					.getLocalService(ActivityStreamService.class);
-			Activity activity = activityStreamService.getActivity(Long
-					.valueOf(ActivityHelper.getActivityId(objectId)));
+			ActivityStreamService activityStreamService = Framework.getLocalService(ActivityStreamService.class);
+			Activity activity = activityStreamService.getActivity(Long.valueOf(ActivityHelper.getActivityId(objectId)));
 			activity.getActor();
-			activityData.put("activity_id",
-					ActivityHelper.getActivityId(objectId));
-			activityData.put(
-					"actor",
-					getUserData(
-							ActivityHelper.getUsername(activity.getActor()),
-							coreSession));
+			activityData.put("activity_id",	ActivityHelper.getActivityId(objectId));
+			activityData.put("actor", getUserData(ActivityHelper.getUsername(activity.getActor()), coreSession));
 			// activity context
-			activityData.putAll(setContextDocuments("context",
-					activity.getContext(), coreSession));
-
+			activityData.putAll(setContextDocuments("context", activity.getContext(), coreSession));
 			// activity object
-			activityData.putAll(setContextDocuments("object",
-					activity.getObject(), coreSession));
-
+			activityData.putAll(setContextDocuments("object", activity.getObject(), coreSession));
 			// activity target
-			activityData.putAll(setContextDocuments("target",
-					activity.getTarget(), coreSession));
+			activityData.putAll(setContextDocuments("target", activity.getTarget(), coreSession));
 
 			data.put(name, activityData);
 		} else if (ActivityHelper.isDocument(objectId)) {
-			data.put(name, coreSession.getDocument((DocumentRef) new IdRef(
-					ActivityHelper.getDocumentId(objectId))));
+			data.put(name, coreSession.getDocument((DocumentRef) new IdRef(ActivityHelper.getDocumentId(objectId))));
 		} else if (ActivityHelper.isUser(objectId)) {
-			data.put(
-					name,
-					getUserData(ActivityHelper.getUsername(objectId),
-							coreSession));
+			data.put(name, getUserData(ActivityHelper.getUsername(objectId), coreSession));
 		} else {
 			data.put(name, objectId);
 		}
 		return data;
-
 	}
 
 }

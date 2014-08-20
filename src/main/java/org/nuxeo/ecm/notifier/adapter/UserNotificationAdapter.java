@@ -28,8 +28,7 @@ public class UserNotificationAdapter {
 	}
 
 	public String getUsername() throws ClientException {
-		return ActivityHelper.getUsername((String) doc
-				.getPropertyValue("userNotification:user"));
+		return (String) doc.getPropertyValue("userNotification:user");
 	}
 
 	public Calendar getCreated() throws ClientException {
@@ -62,8 +61,7 @@ public class UserNotificationAdapter {
 
 	public boolean markRead() throws PropertyException, ClientException {
 		if (getViewed() == null) {
-			doc.setPropertyValue("userNotification:viewed",
-					Calendar.getInstance());
+			doc.setPropertyValue("userNotification:viewed",	Calendar.getInstance());
 			return true;
 		}
 		return false;
