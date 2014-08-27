@@ -344,7 +344,7 @@ public class NotifierServiceImpl extends DefaultComponent implements NotifierSer
 		context.put("user",	getUserData(userNotification.getUsername(), session));
 		// set Target documents
 		context.putAll(setContextDocuments("target", userNotification.getTarget(), session));
-		context.putAll(setContextDocuments("object", userNotification.getObject(), session));
+        context.putAll(setContextDocuments("object", userNotification.getObject(), session));
 
 		// render
 		try {
