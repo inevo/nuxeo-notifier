@@ -21,7 +21,7 @@
 		<notificationType name="newComment" 
 						  label="label.notification.type.newComment" 
 						  template="comment-notification" 
-						  summaryTemplate="omment-notification-summary" />
+						  summaryTemplate="comment-notification-summary" />
       </code>
       The
       <em>name</em>
