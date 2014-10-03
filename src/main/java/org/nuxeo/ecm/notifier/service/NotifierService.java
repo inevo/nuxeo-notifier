@@ -1,6 +1,7 @@
 package org.nuxeo.ecm.notifier.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -24,9 +25,8 @@ public interface NotifierService {
 	Boolean removeNotification(long id);
 
 	String renderNotification(UserNotificationAdapter userNotification,
-			CoreSession session) throws ClientException;
+			CoreSession session, Map<String, Object> parameters) throws ClientException;
 
 	String renderNotificationSummary(UserNotificationAdapter userNotification,
-			CoreSession session) throws ClientException;
-
+			CoreSession session, Map<String, Object> parameters) throws ClientException;
 }

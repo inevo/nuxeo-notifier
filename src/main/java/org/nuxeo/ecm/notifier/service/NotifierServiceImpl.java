@@ -30,7 +30,6 @@ import org.nuxeo.ecm.core.api.ClientRuntimeException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.directory.DirectoryException;
 import org.nuxeo.ecm.directory.Session;
@@ -316,32 +315,33 @@ public class NotifierServiceImpl extends DefaultComponent implements NotifierSer
 
 	@Override
 	public String renderNotification(UserNotificationAdapter userNotification,
-			CoreSession session) throws ClientException {
+			CoreSession session, Map<String, Object> parameters) throws ClientException {
 		NotificationType notificationType = notificationTypeRegistry
                 .getNotificationTypeByName(userNotification.getName());
-		return renderTemplate(notificationType.getTemplate(), userNotification,	session);
+		return renderTemplate(notificationType.getTemplate(), userNotification,	session, parameters);
 	}
 
 	@Override
 	public String renderNotificationSummary(
-			UserNotificationAdapter userNotification, CoreSession session)
+			UserNotificationAdapter userNotification, CoreSession session, Map<String, Object> parameters)
 			throws ClientException {
 		NotificationType notificationType = notificationTypeRegistry.getNotificationTypeByName(userNotification.getName());
-		return renderTemplate(notificationType.getSummaryTemplate(), userNotification, session);
+		return renderTemplate(notificationType.getSummaryTemplate(), userNotification, session, parameters);
 	}
 
-	protected String renderTemplate(String template,
-			UserNotificationAdapter userNotification, CoreSession session)
-			throws ClientException {
-		String notificationRender = "<P>User Notification without template.</P>";
+	protected String renderTemplate(String template, UserNotificationAdapter userNotification, CoreSession session,
+                                    Map<String, Object> parameters) throws ClientException {
+
+        String notificationRender = "<p>User Notification without template</p>";
 		DocumentRenderingContext context = new DocumentRenderingContext();
 
 		context.remove("doc");
 
+        context.put("parameters", parameters);
 		context.put("notification", userNotification.getDocumentModel());
 		context.put("isUnread", userNotification.isUnread());
 		// set user documents
-		context.put("user",	getUserData(userNotification.getUsername(), session));
+		context.put("user", getUserData(userNotification.getUsername(), session));
 		// set Target documents
 		context.putAll(setContextDocuments("target", userNotification.getTarget(), session));
         context.putAll(setContextDocuments("object", userNotification.getObject(), session));
@@ -356,16 +356,15 @@ public class NotifierServiceImpl extends DefaultComponent implements NotifierSer
 				notificationRender = (String) result.getOutcome();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            log.error("Error rendering template", e);
 		}
 
 		context.put("Runtime", Framework.getRuntime());
 		return notificationRender;
 	}
 
-	protected Map<String, Object> getUserData(String username,
-			CoreSession coreSession) {
+	protected Map<String, Object> getUserData(String username, CoreSession coreSession) {
+
 		Map<String, Object> user = new HashMap<String, Object>();
 		UserProfileService userProfileService;
 		UserManager userManager;
@@ -396,15 +395,16 @@ public class NotifierServiceImpl extends DefaultComponent implements NotifierSer
 			user.put("avatarUri", avatarUri);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return user;
 	}
 
-	protected Map<String, Object> setContextDocuments(String name,
-			String objectId, CoreSession coreSession) throws ClientException {
-		Map<String, Object> data = new HashMap<String, Object>();
+	protected Map<String, Object> setContextDocuments(String name, String objectId, CoreSession coreSession)
+            throws ClientException {
+
+        Map<String, Object> data = new HashMap<String, Object>();
 		if (ActivityHelper.isActivity(objectId)) {
 			Map<String, Object> activityData = new HashMap<String, Object>();
 			ActivityStreamService activityStreamService = Framework.getLocalService(ActivityStreamService.class);
@@ -418,13 +418,14 @@ public class NotifierServiceImpl extends DefaultComponent implements NotifierSer
 			activityData.putAll(setContextDocuments("object", activity.getObject(), coreSession));
 			// activity target
 			activityData.putAll(setContextDocuments("target", activity.getTarget(), coreSession));
-
 			data.put(name, activityData);
-		} else if (ActivityHelper.isDocument(objectId)) {
-			data.put(name, coreSession.getDocument((DocumentRef) new IdRef(ActivityHelper.getDocumentId(objectId))));
-		} else if (ActivityHelper.isUser(objectId)) {
+        } else if (ActivityHelper.isDocument(objectId)) {
+            DocumentModel doc = coreSession.getDocument(new IdRef(ActivityHelper.getDocumentId(objectId)));
+			data.put(name, doc);
+            data.put("docSlug", doc.getPropertyValue("slug"));
+        } else if (ActivityHelper.isUser(objectId)) {
 			data.put(name, getUserData(ActivityHelper.getUsername(objectId), coreSession));
-		} else {
+        } else {
 			data.put(name, objectId);
 		}
 		return data;
