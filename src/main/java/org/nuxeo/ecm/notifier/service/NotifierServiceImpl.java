@@ -422,7 +422,11 @@ public class NotifierServiceImpl extends DefaultComponent implements NotifierSer
         } else if (ActivityHelper.isDocument(objectId)) {
             DocumentModel doc = coreSession.getDocument(new IdRef(ActivityHelper.getDocumentId(objectId)));
 			data.put(name, doc);
-            data.put("docSlug", doc.getPropertyValue("slug"));
+            try {
+                data.put("docSlug", doc.getPropertyValue("slug"));
+            } catch (Exception e) {
+                log.info("No slug available for this type of document");
+            }
         } else if (ActivityHelper.isUser(objectId)) {
 			data.put(name, getUserData(ActivityHelper.getUsername(objectId), coreSession));
         } else {
